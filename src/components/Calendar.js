@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import TodoList from "./TodoList";
-import { useSelector, useDispatch } from "react-redux";
-import { addTodo } from "../features/todoSlice";
-import { nanoid } from "@reduxjs/toolkit";
+import Alert from "./events";
+import AddTodo from "./addTodo";
+
 const Calendar = () => {
   const currentDate = new Date();
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
-  // const [title, setTitle] = useState("");
-  // const [description, setDescription] = useState("");
-  const dispatch = useDispatch();
-
-  const [todos, setTodos] = useState([]);
 
   const nextMonth = () => {
     setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1));
@@ -58,44 +53,6 @@ const Calendar = () => {
     setSelectedDate(clickedDate);
   };
 
-  // const handleAddTodo = () => {
-  //   if (!title || !description || !selectedDate) return;
-  //   const newTodo = {
-  //     id: new Date().getTime(),
-  //     title,
-  //     description,
-  //     date: selectedDate,
-  //   };
-  //   setTodos([...todos, newTodo]);
-  // setTitle("");
-  // setDescription("");
-  // };
-
-  // const handleDeleteTodo = (id) => {
-  //   const updatedTodos = todos.filter((todo) => todo.id !== id);
-  //   setTodos(updatedTodos);
-  // };
-
-  // const handleEditTodo = (id, updatedTodo) => {
-  //   console.log("Editing todo with ID:", id);
-  //   const updatedTodos = todos.map((todo) =>
-  //     todo.id === id ? { ...todo, ...updatedTodo } : todo
-  //   );
-  //   setTodos(updatedTodos);
-  // };
-  const submitHandle = (e) => {
-    e.preventDefault();
-    dispatch(
-      addTodo({
-        sdate: selectedDate.toLocaleDateString(),
-        id: nanoid(),
-        title: e.target.elements.title.value,
-        description: e.target.elements.desc.value,
-      })
-    );
-    e.target.elements.title.value = "";
-    e.target.elements.desc.value = "";
-  };
   const renderCalendarGrid = () => {
     const numDays = daysInMonth(currentMonth, currentYear);
     const firstDay = firstDayOfMonth(currentMonth, currentYear);
@@ -109,10 +66,10 @@ const Calendar = () => {
       days.push(
         <button
           key={i}
-          className={`w-20 h-20 flex items-center justify-center ${
+          className={`w-auto h-20 flex items-center border   justify-center ${
             selectedDate && selectedDate.getDate() === i
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-200"
+              ? "bg-red-500 border border-red-500 text-white rounded-full"
+              : "hover:bg-gray-200 rounded-full"
           }`}
           onClick={() => handleDayClick(i)}
         >
@@ -125,62 +82,45 @@ const Calendar = () => {
   };
 
   return (
-    <div className="flex justify-around">
-      <div className="container  w-1/2 border">
+    <div className="flex justify-around   bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen">
+      <div className="container mt-3 mb-4 rounded-xl w-auto   bg-yellow-50 border-spacing-3 border border-yellow-400">
         <div className="flex justify-between mb-4">
           <button
             onClick={prevMonth}
-            className="bg-gray-200 hover:bg-red-600 text-gray-700 font-bold py-2 px-4 rounded-full"
+            className=" mt-1 ml-1 bg-gray-200 hover:bg-red-600 text-gray-700 font-bold py-2 px-4 rounded-full"
           >
-            &lt;
+            ◀️
           </button>
-          <h2 className="text-lg">
+          <h2 className="text-lg bg-white rounded-full p-2">
             {months[currentMonth]} {currentYear}
           </h2>
           <button
             onClick={nextMonth}
-            className="bg-gray-200 hover:bg-red-600 text-gray-700 font-bold py-2 px-4 rounded-full"
+            className=" mt-1 mr-1  bg-gray-200 hover:bg-red-600 text-gray-700 font-bold py-2 px-4 rounded-full"
           >
-            &gt;
+            ⏩
           </button>
         </div>
 
-        <div className="flex mb-4">
+        <div className="flex mb-4 ">
           {weekdays.map((day) => (
             <div
               key={day}
-              className="w-20 h-20 flex items-center justify-center font-bold"
+              className="w-full h-20 flex items-center justify-center font-bold bg-white border shadow-lg rounded-t-xl"
             >
               {day}
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-1  ">{renderCalendarGrid()}</div>
+        <div className="w-full grid grid-cols-7 gap-1  border-t-emerald-500 border-l-emerald-500  border-4 rounded-lg border-blue-600 overflow-hidden ">
+          {renderCalendarGrid()}
+        </div>
 
-        {selectedDate && (
-          <form onSubmit={submitHandle}>
-            <h2 className="bg-blue-400">
-              Add Todo for : {selectedDate.toLocaleDateString()}
-            </h2>
-            <input
-              name="title"
-              type="text"
-              placeholder="Title"
-              className="block mb-2"
-            />
-            <textarea
-              name="desc"
-              placeholder="Description"
-              className="block mb-2"
-            />
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-              Add Todo
-            </button>
-          </form>
-        )}
+        {selectedDate && <AddTodo selectedDate={selectedDate} />}
       </div>
       <div className="bg-gray-300-4">
+        <Alert />
         <TodoList
           selectedDate={selectedDate && selectedDate.toLocaleDateString()}
         />

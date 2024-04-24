@@ -36,46 +36,47 @@ const TodoList = () => {
   };
 
   return (
-    <div>
-      <h2 className="underline border-lime-400">Upcoming Events</h2>
+    <div className="bg-slate-50  py-2 m-2 rounded-lg"> 
+      <h2 className="text-blue-700 border rounded-lg bg-yellow-200 border-lime-400 px-2  ">Upcoming Events ⏰</h2>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
             <div className="flex mx-2 gap-1">
-              {/* <p>{todo.id}</p> */}
-              <p className="p-2">{todo.sdate}</p>
+              <p className="p-2">{todo.sdate} :</p>
               {editMode === todo.id ? (
                 <input
+                required
                   placeholder="title"
                   type="text"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                 />
               ) : (
-                <strong className="p-2">{todo.title}</strong>
+                <strong className="p-2">{todo.title} </strong>
               )}
               {editMode === todo.id ? (
                 <input
+                required
                   placeholder="desc"
                   type="text"
                   value={editedDescription}
                   onChange={(e) => setEditedDescription(e.target.value)}
                 />
               ) : (
-                <p className="p-2">{todo.description}</p>
+                <p className="p-2"> - {todo.description}</p>
               )}
             </div>
             <div>
               {!editMode && (
                 <button
-                  className="border rounded-full bg-red-400 px-2 hover:bg-red-600-700"
+                  className="border   rounded-full bg-green-300 px-2 hover:bg-green-500 mx-2"
                   onClick={() => setEditMode(todo.id)}
                 >
                   Edit
                 </button>
               )}
               <button
-                className="border rounded-full bg-red-400 px-2 hover:bg-red-600-700"
+                className="border rounded-full bg-red-400 px-2 hover:bg-red-600"
                 onClick={() => handleDelete(todo.id)}
               >
                 Delete
